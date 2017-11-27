@@ -40,7 +40,7 @@ using Autofac.Features.OwnedInstances;
 namespace Autofac
 {
     /// <summary>
-    /// Used to build an <see cref="IContainer"/> from component registrations.
+    /// 用于从组件注册中构建一个IContainer.
     /// </summary>
     /// <example>
     /// <code>
@@ -69,6 +69,7 @@ namespace Autofac
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ContainerBuilder"/> class.
+        /// 初始化容器生成器类的新实例。
         /// </summary>
         public ContainerBuilder()
             : this(new Dictionary<string, object>())
@@ -77,6 +78,7 @@ namespace Autofac
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ContainerBuilder"/> class.
+        /// 初始化容器生成器类的新实例。
         /// </summary>
         /// <param name="properties">The properties used during component registration.</param>
         internal ContainerBuilder(IDictionary<string, object> properties)
@@ -90,18 +92,17 @@ namespace Autofac
         }
 
         /// <summary>
-        /// Gets the set of properties used during component registration.
+        ///  Gets 获取组件注册期间使用的属性集.
         /// </summary>
         /// <value>
-        /// An <see cref="IDictionary{TKey, TValue}"/> that can be used to share
-        /// context across registrations.
+        /// 在注册上下文可以共享的IDictionary
         /// </value>
         public IDictionary<string, object> Properties { get; }
 
         /// <summary>
-        /// Register a callback that will be invoked when the container is configured.
+        /// 注册一个在配置容器时调用的回调.
         /// </summary>
-        /// <remarks>This is primarily for extending the builder syntax.</remarks>
+        /// <remarks>这主要是为了扩展生成器语法.</remarks>
         /// <param name="configurationCallback">Callback to execute.</param>
         public virtual DeferredCallback RegisterCallback(Action<IComponentRegistry> configurationCallback)
         {
@@ -113,7 +114,7 @@ namespace Autofac
         }
 
         /// <summary>
-        /// Register a callback that will be invoked when the container is built.
+        /// 注册一个在构建容器时调用的回调.
         /// </summary>
         /// <param name="buildCallback">Callback to execute.</param>
         /// <returns>The <see cref="ContainerBuilder"/> instance to continue registration calls.</returns>
@@ -128,17 +129,13 @@ namespace Autofac
         }
 
         /// <summary>
-        /// Create a new container with the component registrations that have been made.
+        /// 创建一个包含已生成的组件注册的新容器.
         /// </summary>
         /// <param name="options">Options that influence the way the container is initialised.</param>
         /// <remarks>
-        /// Build can only be called once per <see cref="ContainerBuilder"/>
-        /// - this prevents ownership issues for provided instances.
-        /// Build enables support for the relationship types that come with Autofac (e.g.
-        /// Func, Owned, Meta, Lazy, IEnumerable.) To exclude support for these types,
-        /// first create the container, then call Update() on the builder.
+        /// 一个带有配置组件注册的新容器
         /// </remarks>
-        /// <returns>A new container with the configured component registrations.</returns>
+        /// <returns>一个带有配置组件注册的新容器.</returns>
         public IContainer Build(ContainerBuildOptions options = ContainerBuildOptions.None)
         {
             var result = new Container(Properties);
@@ -156,9 +153,7 @@ namespace Autofac
 
         private static void StartStartableComponents(IComponentContext componentContext)
         {
-            // We track which registrations have already been auto-activated by adding
-            // a metadata value. If the value is present, we won't re-activate. This helps
-            // in the container update situation.
+            // 我们追踪哪些注册已经被添加了自动激活元数据的值。如果值存在，我们就不会重新激活。这可以帮助在容器更新的情况下。
             const string started = MetadataKeys.AutoActivated;
             object meta;
 
@@ -193,14 +188,13 @@ namespace Autofac
         }
 
         /// <summary>
-        /// Configure an existing container with the component registrations
-        /// that have been made.
+        ///    用组件注册配置一个现有的容器所做.
         /// </summary>
         /// <remarks>
-        /// Update can only be called once per <see cref="ContainerBuilder"/>
-        /// - this prevents ownership issues for provided instances.
+        /// 更新只能调用一次容器构建器
+        /// -这可以防止提供实例的所有权问题.
         /// </remarks>
-        /// <param name="container">An existing container to make the registrations in.</param>
+        /// <param name="container">注册的现有容器.</param>
         [SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters", Justification = "You can't update any arbitrary context, only containers.")]
         [Obsolete("Containers should generally be considered immutable. Register all of your dependencies before building/resolving. If you need to change the contents of a container, you technically should rebuild the container. This method may be removed in a future major release.")]
         public void Update(IContainer container)
@@ -209,22 +203,20 @@ namespace Autofac
         }
 
         /// <summary>
-        /// Configure an existing container with the component registrations
-        /// that have been made and allows additional build options to be specified.
+        /// 用组件注册配置一个现有的容器
+        /// 已经生成并允许指定额外的构建选项.
         /// </summary>
         /// <remarks>
-        /// Update can only be called once per <see cref="ContainerBuilder"/>
-        /// - this prevents ownership issues for provided instances.
+        ///  更新只能调用一次容器构建器
+        /// - 这可以防止提供实例的所有权问题.
         /// </remarks>
-        /// <param name="container">An existing container to make the registrations in.</param>
-        /// <param name="options">Options that influence the way the container is updated.</param>
+        /// <param name="container">注册的现有容器.</param>
+        /// <param name="options">影响容器更新方式的选项.</param>
         [SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters", Justification = "You can't update any arbitrary context, only containers.")]
         [Obsolete("Containers should generally be considered immutable. Register all of your dependencies before building/resolving. If you need to change the contents of a container, you technically should rebuild the container. This method may be removed in a future major release.")]
         public void Update(IContainer container, ContainerBuildOptions options)
         {
-            // Issue #462: The ContainerBuildOptions parameter is added here as an overload
-            // rather than an optional parameter to avoid method binding issues. In version
-            // 4.0 or later we should refactor this to be an optional parameter.
+            // Issue #462: 在这里添加ContainerBuildOptions参数作为重载而不是一个可选参数来避免方法绑定问题。在版本4.0或稍后我们应该将此重构为可选参数.
             if (container == null) throw new ArgumentNullException(nameof(container));
             Update(container.ComponentRegistry);
             if ((options & ContainerBuildOptions.IgnoreStartableComponents) == ContainerBuildOptions.None)
@@ -232,14 +224,14 @@ namespace Autofac
         }
 
         /// <summary>
-        /// Configure an existing registry with the component registrations
-        /// that have been made.
+        /// 用组件注册配置一个现有的注册表
+        /// 这已经被创造出来了.
         /// </summary>
         /// <remarks>
-        /// Update can only be called once per <see cref="ContainerBuilder"/>
-        /// - this prevents ownership issues for provided instances.
+        /// 更新只能调用一次容器构建器
+        /// -这可以防止提供实例的所有权问题。
         /// </remarks>
-        /// <param name="componentRegistry">An existing registry to make the registrations in.</param>
+        /// <param name="componentRegistry">注册的注册中心.</param>
         [Obsolete("Containers should generally be considered immutable. Register all of your dependencies before building/resolving. If you need to change the contents of a container, you technically should rebuild the container. This method may be removed in a future major release.")]
         public void Update(IComponentRegistry componentRegistry)
         {
@@ -247,15 +239,15 @@ namespace Autofac
         }
 
         /// <summary>
-        /// Configure an existing registry with the component registrations
-        /// that have been made. Primarily useful in dynamically adding registrations
-        /// to a child lifetime scope.
+        /// 用组件注册配置一个现有的注册表
+        /// 所做的。主要用于动态添加注册
+        /// 到一个子类的生命周期范围。
         /// </summary>
         /// <remarks>
-        /// Update can only be called once per <see cref="ContainerBuilder"/>
-        /// - this prevents ownership issues for provided instances.
+        /// 更新只能调用一次容器构建器
+        /// -这可以防止提供实例的所有权问题。
         /// </remarks>
-        /// <param name="componentRegistry">An existing registry to make the registrations in.</param>
+        /// <param name="componentRegistry">注册的注册中心.</param>
         internal void UpdateRegistry(IComponentRegistry componentRegistry)
         {
             if (componentRegistry == null) throw new ArgumentNullException(nameof(componentRegistry));

@@ -29,7 +29,7 @@ using System.Collections.Generic;
 namespace Autofac.Core
 {
     /// <summary>
-    /// Provides component registrations according to the services they provide.
+    /// 根据提供的服务提供组件注册.
     /// </summary>
     public interface IComponentRegistry : IDisposable
     {
